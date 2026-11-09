@@ -285,6 +285,8 @@ async function main() {
       autoRotate: controls.autoRotate,
       enablePan: controls.enablePan,
       enableZoom: controls.enableZoom,
+      minDistance: controls.minDistance,
+      maxDistance: controls.maxDistance,
       azimuthUnbounded: !Number.isFinite(controls.minAzimuthAngle) && !Number.isFinite(controls.maxAzimuthAngle)
     };
   })()`);
@@ -329,7 +331,7 @@ async function main() {
   await delay(300);
   await waitForPaint();
   const home = await cameraState();
-  if (home.enablePan || home.enableZoom || !home.azimuthUnbounded) {
+  if (home.enablePan || !home.enableZoom || !home.azimuthUnbounded || home.minDistance !== 55 || home.maxDistance !== 300) {
     throw new Error(`Unexpected camera configuration: ${JSON.stringify(home)}`);
   }
 
@@ -366,7 +368,7 @@ async function main() {
   });
   await delay(300);
   const afterWheel = await cameraState();
-  if (Math.abs(afterWheel.distance - home.distance) > 0.001) throw new Error("Wheel changed distance while zoom is disabled");
+  if (afterWheel.distance >= afterRightDrag.distance - 0.01) throw new Error("Mouse wheel did not zoom in");
 
   await evaluate("document.querySelector('.reset-button').click()");
   await delay(300);
@@ -431,11 +433,30 @@ async function main() {
   await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   await delay(300);
   const mobileAfterPinch = await cameraState();
-  if (Math.abs(mobileAfterPinch.distance - mobileAfterRotate.distance) > 0.001) {
-    throw new Error("Mobile pinch changed distance while zoom is disabled");
+  if (mobileAfterPinch.distance >= mobileAfterRotate.distance - 0.01) {
+    throw new Error("Mobile spread gesture did not zoom in");
   }
 
-  console.log(JSON.stringify({ areas: areaChecks.map((area) => area.name), layout, sceneDetails, horizontalRotationDegrees: Math.round(Math.abs(totalRotation) * 180 / Math.PI), verticalPolarRadians: [tilted.polar, lowered.polar], disabledControls: "pan and zoom", reset: "home position restored", autoRotate: "resumed after four seconds", mobile: { ...mobile, gestures: "one-finger orbit; pinch zoom disabled" }, exceptions, consoleErrors }, null, 2));
+  const pinch = async (startGap, endGap) => {
+    await send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: 206 - startGap / 2, y: 460, id: 1 }, { x: 206 + startGap / 2, y: 460, id: 2 }] });
+    await send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: 206 - endGap / 2, y: 460, id: 1 }, { x: 206 + endGap / 2, y: 460, id: 2 }] });
+    await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await waitForPaint();
+  };
+  await pinch(160, 80);
+  const mobileZoomedOut = await cameraState();
+  if (mobileZoomedOut.distance <= mobileAfterPinch.distance + 0.01) throw new Error("Mobile pinch did not zoom out");
+  for (let index = 0; index < 4; index++) await pinch(24, 360);
+  const nearest = await cameraState();
+  if (Math.abs(nearest.distance - nearest.minDistance) > 0.01) throw new Error(`Zoom-in limit failed: ${nearest.distance}`);
+  for (let index = 0; index < 4; index++) await pinch(360, 24);
+  const farthest = await cameraState();
+  if (Math.abs(farthest.distance - farthest.maxDistance) > 0.01) throw new Error(`Zoom-out limit failed: ${farthest.distance}`);
+  await evaluate("document.querySelector('.reset-button').click()");
+  await waitForPaint();
+  const mobileReset = await cameraState();
+  if (Math.abs(mobileReset.distance - mobileBeforeGesture.distance) > 0.01) throw new Error("Mobile reset did not restore initial zoom");
+  console.log(JSON.stringify({ areas: areaChecks.map((area) => area.name), layout, sceneDetails, horizontalRotationDegrees: Math.round(Math.abs(totalRotation) * 180 / Math.PI), verticalPolarRadians: [tilted.polar, lowered.polar], disabledControls: "pan", zoom: { desktop: "mouse wheel", min: nearest.distance, max: farthest.distance }, reset: "home position and zoom restored", autoRotate: "resumed after four seconds", mobile: { ...mobile, gestures: "one-finger orbit; two-finger zoom in and out", zoomDistances: [mobileAfterRotate.distance, mobileAfterPinch.distance, mobileZoomedOut.distance] }, exceptions, consoleErrors }, null, 2));
   if (exceptions.length) throw new Error(`Browser exceptions: ${exceptions.join("; ")}`);
   if (consoleErrors.length) throw new Error(`Browser console errors: ${consoleErrors.join("; ")}`);
   socket.close();

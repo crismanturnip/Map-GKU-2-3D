@@ -13,6 +13,7 @@ const FOCUS_DURATION_MS = 800;
 const FOCUS_FILL = 0.5;
 // Area kecil (sponsor, photobooth) tetap memperlihatkan sekelilingnya sebagai patokan.
 const FOCUS_MIN_DISTANCE = 55;
+const MAX_DISTANCE = 300;
 const FOCUS_MAX_DISTANCE_RATIO = 0.85;
 // Ukuran popup mengikuti .zone-panel di styles.css (lebar 360px di kanan, lembar bawah ≤ 58svh di layar sempit).
 const PANEL_WIDTH = 360;
@@ -184,7 +185,7 @@ export function CameraRig({ resetSignal, focusZoneId }: CameraRigProps) {
       const distance = MathUtils.clamp(
         focus.extent / (FOCUS_FILL * visible * unitsPerPixelAtOne),
         FOCUS_MIN_DISTANCE,
-        overviewDistance * FOCUS_MAX_DISTANCE_RATIO,
+        Math.max(FOCUS_MIN_DISTANCE, overviewDistance * FOCUS_MAX_DISTANCE_RATIO),
       );
       // Kamera mendekat dari arah pandang saat ini agar orientasi pengguna tidak hilang.
       const direction = camera.position.clone().sub(control.target).normalize();
@@ -240,7 +241,10 @@ export function CameraRig({ resetSignal, focusZoneId }: CameraRigProps) {
       dampingFactor={0.08}
       rotateSpeed={0.7}
       enablePan={false}
-      enableZoom={false}
+      enableZoom
+      zoomSpeed={0.8}
+      minDistance={FOCUS_MIN_DISTANCE}
+      maxDistance={MAX_DISTANCE}
       minPolarAngle={0.25}
       maxPolarAngle={1.5}
       autoRotate={autoRotate && !reducedMotion}

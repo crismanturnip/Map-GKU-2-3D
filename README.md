@@ -38,14 +38,14 @@ Folder `node_modules`, `dist`, dan `qa` tidak diunggah ke repository.
 ## Kontrol
 
 - Desktop: drag kiri untuk memutar kamera mengelilingi kawasan.
-- Mobile: drag satu jari untuk memutar kamera.
+- Mobile: drag satu jari untuk memutar kamera; renggangkan dua jari untuk mendekat dan rapatkan untuk menjauh.
 - Rotasi horizontal bebas 360°. Rotasi vertikal dibatasi agar kamera tetap di atas peta.
 - Setelah interaksi berhenti selama empat detik, kamera kembali berputar pelan. Putaran otomatis mengikuti preferensi sistem untuk mengurangi gerakan.
-- Pan dan zoom dinonaktifkan sesuai referensi gerakan MCT Classroom.
+- Zoom tersedia dengan scroll mouse di desktop dan gesture cubit dua jari di mobile. Jarak kamera dibatasi 55–300 satuan agar bangunan bisa diperbesar tanpa kamera masuk terlalu dekat atau menjauh berlebihan. Pan tetap dinonaktifkan.
 - Tombol **Reset view** menutup popup dan mengembalikan kamera ke sudut awal.
 - Hover area menampilkan nama sederhana. Klik atau tap area membuka popup informasi zona (jenis, deskripsi, jadwal, jumlah stand, dan isi zona). Saat area dipilih, kamera meluncur mendekat ke area tersebut (sekitar 0,8 detik, dari arah pandang yang sama) dan area digeser agar tidak tertutup popup; selama itu kamera bisa diputar 360° mengelilingi area dan putaran otomatis berhenti. Popup ditutup dengan tombol ×, tombol Esc, atau klik area kosong, lalu kamera mundur ke sudut pandang sebelum area diklik. Memilih area lain langsung memindahkan kamera ke area itu. Di layar sempit popup tampil sebagai lembar bawah. Dengan preferensi sistem untuk mengurangi gerakan, kamera berpindah tanpa animasi.
 
-Kamera mengorbit titik tengah kawasan dengan jarak tetap, sehingga bangunan dapat dilihat dari berbagai sisi tanpa berpindah ke bawah peta.
+Kamera mengorbit titik tengah kawasan dengan jarak yang bisa diatur melalui zoom, sehingga bangunan dapat dilihat lebih dekat dari berbagai sisi tanpa berpindah ke bawah peta. Tombol **Reset view** juga mengembalikan tingkat zoom ke tampilan awal.
 
 Latar memakai fungsi tekstur bintang dan bulan yang diport dari bundle publik `Scene3D-JafVaRTM.js` pada https://kmhexpo-2026.pages.dev/, termasuk ukuran tekstur, jumlah bintang, warna, kawah, dan kilau tepi bulan. Kamera latar mengikuti FOV asli 75° (responsif sampai 96°), posisi bulan `[90, -18, -360]`, radius 78, dan kecepatan putaran 0,054 radian/detik. Heading awal 029° mengikuti screenshot referensi agar bulan terlihat di samping peta. `SpaceBackdrop.tsx` merender latar ke tekstur pada resolusi 1x tanpa multisampling; React Three Fiber tetap menjalankan render peta secara normal pada satu renderer WebGL. Kontrol dan fokus kamera peta tidak mengubah kamera latar. Dengan `prefers-reduced-motion`, latar berhenti dan hasil render dipakai ulang; viewport hingga 768px memakai detail geometri/tekstur yang lebih rendah. Semua tekstur dibuat lokal melalui canvas dalam `spaceTextures.ts`, tanpa unduhan aset saat website dibuka. `SpaceBackground.tsx` menyediakan warna cadangan selama WebGL mulai dimuat; gambar WebP lama tidak dipakai lagi. `node qa/verify-reference-port.mjs` membandingkan perintah gambar tekstur desktop dan mobile dengan kode referensi yang tersimpan di `qa/reference/`.
 
