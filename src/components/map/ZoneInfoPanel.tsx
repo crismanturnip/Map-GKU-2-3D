@@ -23,6 +23,7 @@ export function ZoneInfoPanel({ zone, onClose }: ZoneInfoPanelProps) {
   }, [onClose]);
 
   const { info } = zone;
+  const zoneEntries = info?.highlights ?? [];
 
   return (
     <aside className="zone-panel" role="dialog" aria-labelledby={titleId}>
@@ -30,7 +31,9 @@ export function ZoneInfoPanel({ zone, onClose }: ZoneInfoPanelProps) {
         <span className="zone-panel__swatch" style={{ background: zone.color }} aria-hidden="true" />
         <div className="zone-panel__heading">
           {info && <span className="zone-panel__category">{info.category}</span>}
-          <h2 id={titleId}>{zone.name}</h2>
+          <h2 id={titleId}>
+            {zone.name} ({zoneEntries.length})
+          </h2>
         </div>
         <button ref={closeButton} className="zone-panel__close" type="button" onClick={onClose} aria-label="Tutup informasi zona">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -43,27 +46,15 @@ export function ZoneInfoPanel({ zone, onClose }: ZoneInfoPanelProps) {
         <div className="zone-panel__body">
           <p className="zone-panel__description">{info.description}</p>
 
-          <dl className="zone-panel__facts">
-            <div>
-              <dt>Jadwal</dt>
-              <dd>{info.schedule}</dd>
-            </div>
-            <div>
-              <dt>Jumlah stand</dt>
-              <dd>{zone.standIds.length > 0 ? zone.standIds.length : "Segera diumumkan"}</dd>
-            </div>
-          </dl>
-
           <section aria-label={`Isi ${zone.name}`}>
             <h3>Isi zona</h3>
-            <ul className="zone-panel__list">
-              {info.highlights.map((item) => (
+            <ol className="zone-panel__list">
+              {zoneEntries.map((item) => (
                 <li key={item}>
-                  <span className="zone-panel__bullet" style={{ background: zone.color }} aria-hidden="true" />
                   {item}
                 </li>
               ))}
-            </ul>
+            </ol>
           </section>
         </div>
       ) : (

@@ -136,7 +136,7 @@ async function main() {
     throw new Error(`Unexpected revised layout: ${JSON.stringify(layout)}`);
   }
   const green = layout.zones.find((zone) => zone.name === "Zone A");
-  const orange = layout.zones.find((zone) => zone.name === "Zone C");
+  const orange = layout.zones.find((zone) => zone.name === "Zone B");
   const roofOverhang = 0.12;
   if (layout.gku2Rotation !== 0 || !green || !orange || green.maxX >= layout.gku2Position[0] - 18 - roofOverhang || orange.minX <= layout.gku2Position[0] + 18 + roofOverhang) {
     throw new Error(`Building and adjacent areas are not aligned: ${JSON.stringify(layout)}`);
@@ -213,7 +213,7 @@ async function main() {
   })()`);
   const areaChecks = [
     { name: "Zone A", position: [-27, 6] },
-    { name: "Zone C", position: [34, 5] },
+    { name: "Zone B", position: [34, 5] },
     { name: "Area Photobooth", position: [35, -21] },
     { name: "Area Sponsor", position: [15, -21.5] },
   ];

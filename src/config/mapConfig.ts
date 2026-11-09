@@ -115,7 +115,6 @@ export const zones: readonly ZoneConfig[] = [
         "Sed do eiusmod tempor",
         "Ut enim ad minim veniam",
       ],
-      schedule: "Lorem ipsum · 09.00–17.00",
     },
   },
   {
@@ -140,12 +139,11 @@ export const zones: readonly ZoneConfig[] = [
         "Quia voluptas sit aspernatur",
         "Neque porro quisquam est",
       ],
-      schedule: "Dolor sit · 10.00–16.00",
     },
   },
   {
     id: "zone-c",
-    name: "Zone C",
+    name: "Zone B",
     color: "#ff5a1f",
     position: [34, 11],
     points: [
@@ -167,7 +165,6 @@ export const zones: readonly ZoneConfig[] = [
         "Deserunt mollit anim",
         "Id est laborum",
       ],
-      schedule: "Lorem ipsum · 09.00–18.00",
     },
   },
   {
@@ -194,7 +191,6 @@ export const zones: readonly ZoneConfig[] = [
         "Et aut officiis debitis",
         "Rerum necessitatibus saepe",
       ],
-      schedule: "Amet consectetur · 13.00–20.00",
     },
   },
 ] as const;

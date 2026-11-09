@@ -5,8 +5,8 @@ export type Position3D = readonly [x: number, y: number, z: number];
 export interface ZoneInfo {
   category: string;
   description: string;
+  /** Daftar isi/stand zona sesuai urutan tampil; jumlah di judul mengikuti daftar ini. */
   highlights: readonly string[];
-  schedule: string;
 }
 
 export interface ZoneConfig {

@@ -305,36 +305,6 @@ button {
   line-height: 1.55;
 }
 
-.zone-panel__facts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin: 0;
-}
-
-.zone-panel__facts div {
-  padding: 10px 12px;
-  background: rgb(255 255 255 / 4%);
-  border: 1px solid rgb(144 164 178 / 16%);
-  border-radius: 10px;
-}
-
-.zone-panel__facts dt {
-  margin-bottom: 3px;
-  color: #8996a2;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.zone-panel__facts dd {
-  margin: 0;
-  color: #f4f7f9;
-  font-size: 0.78rem;
-  font-weight: 650;
-}
-
 .zone-panel h3 {
   margin: 0 0 8px;
   color: #8996a2;
@@ -349,22 +319,19 @@ button {
   display: grid;
   gap: 7px;
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding: 0 0 0 3ch;
+  list-style: decimal outside;
 }
 
 .zone-panel__list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  padding-inline-start: 4px;
   font-size: 0.8rem;
+  overflow-wrap: anywhere;
 }
 
-.zone-panel__bullet {
-  flex: 0 0 auto;
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
+.zone-panel__list li::marker {
+  color: #f4f7f9;
+  font-variant-numeric: tabular-nums;
 }
 
 @keyframes zone-panel-in {
